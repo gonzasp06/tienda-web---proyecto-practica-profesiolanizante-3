@@ -10,7 +10,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 
 # Carpeta para imágenes
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
@@ -51,8 +51,7 @@ def mostrar_catalogo():
 # Ruta para cargar un nuevo producto
 @app.route('/formulario')
 def carga_producto():
-    return render_template('carga_produc.html')
-
+    return render_template('formulario_carga_producto.html')#carga_produc.html
 
 @app.route('/cargar_producto', methods=['POST'])
 def cargar_producto():
@@ -74,7 +73,7 @@ def cargar_producto():
         # Ingresar info a la BD
         cursor = conexion.cursor()
         consulta = "INSERT INTO producto (nombre, descripcion, precio, cantidad, foto) VALUES (%s, %s, %s, %s, %s)"
-        valores = (nombre, descripcion, precio, cantidad, ruta_imagen)  # Corrección aquí
+        valores = (nombre, descripcion, precio, cantidad, ruta_imagen)
         cursor.execute(consulta, valores)
         conexion.commit()
         cursor.close()
