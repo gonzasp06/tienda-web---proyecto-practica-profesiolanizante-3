@@ -1,0 +1,19 @@
+
+.selector-for-some-widget {
+    box-sizing: content-box;
+  }
+  .abs-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+  body{
+    color: #000;
+  }
+  .form {
+    width: 450px;
+  }
+  a{
+    color: #000;
+  }

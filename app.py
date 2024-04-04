@@ -26,14 +26,33 @@ def verificar_conexion():
     else:
         return 'Error de conexión'
 
+
 # Ruta raíz
 @app.route('/')
-def index():
-    return render_template('formulario_carga_producto.html') # HTML
+def incio():
+    return render_template('index.html')
+
+
+def obtener_productos():
+    cursor= conexion.cursor()
+    consulta= 'SELECT * FROM catalogo.producto' #VER
+    cursor.execute(consulta)
+    productos=cursor.fetchall()
+    cursor.close()
+    return productos
+
+
+@app.route('/Inicio')
+def mostrar_catalogo():
+    productos = obtener_productos()
+    return render_template('catalogo.html', productos=productos) 
+
 
 # Ruta para cargar un nuevo producto
-# http://127.0.0.1:5000/
-# http://127.0.0.1:5000/cargar_producto
+@app.route('/formulario')
+def carga_producto():
+    return render_template('carga_produc.html')
+
 
 @app.route('/cargar_producto', methods=['POST'])
 def cargar_producto():
