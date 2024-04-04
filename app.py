@@ -27,25 +27,24 @@ def verificar_conexion():
         return 'Error de conexión'
 
 
-# Ruta raíz
-@app.route('/')
-def incio():
-    return render_template('index.html')
+#@app.route('/')
+#def incio():
+#    return render_template('index.html')
 
 
 def obtener_productos():
     cursor= conexion.cursor()
-    consulta= 'SELECT * FROM catalogo.producto' #VER
+    consulta= 'SELECT * FROM catalogo.producto;'
     cursor.execute(consulta)
     productos=cursor.fetchall()
     cursor.close()
     return productos
 
-
-@app.route('/Inicio')
+# Ruta raíz
+@app.route('/')
 def mostrar_catalogo():
     productos = obtener_productos()
-    return render_template('catalogo.html', productos=productos) 
+    return render_template('index.html', productos=productos) 
 
 
 # Ruta para cargar un nuevo producto
