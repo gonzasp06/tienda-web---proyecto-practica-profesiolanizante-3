@@ -50,7 +50,7 @@ def mostrar_catalogo():
 # Ruta para cargar un nuevo producto
 @app.route('/formulario')
 def carga_producto():
-    return render_template('formulario_carga_producto.html')#carga_produc.html
+    return render_template('formulario_carga_producto.html')
 
 @app.route('/cargar_producto', methods=['POST'])
 def cargar_producto():
@@ -83,4 +83,4 @@ def cargar_producto():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
