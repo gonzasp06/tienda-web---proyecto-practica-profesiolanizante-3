@@ -60,6 +60,7 @@ def cargar_producto():
         categoria = request.form['categoria']
         precio = request.form['precio']
         cantidad = request.form['cantidad']
+
         foto = request.files['foto']
         
         # Guardar la imagen en el sistema de archivos
