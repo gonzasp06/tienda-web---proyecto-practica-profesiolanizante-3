@@ -57,6 +57,7 @@ def cargar_producto():
     if request.method == 'POST':
         nombre = request.form['nombre']
         descripcion = request.form['descripcion']
+        categoria = request.form['categoria']
         precio = request.form['precio']
         cantidad = request.form['cantidad']
         foto = request.files['foto']
@@ -71,8 +72,8 @@ def cargar_producto():
 
         # Ingresar info a la BD
         cursor = conexion.cursor()
-        consulta = "INSERT INTO producto (nombre, descripcion, precio, cantidad, foto) VALUES (%s, %s, %s, %s, %s)"
-        valores = (nombre, descripcion, precio, cantidad, ruta_imagen)
+        consulta = "INSERT INTO producto (nombre, descripcion, categoria, precio, cantidad, foto) VALUES (%s, %s, %s, %s, %s, %s)"
+        valores = (nombre, descripcion, categoria, precio, cantidad, ruta_imagen)
         cursor.execute(consulta, valores)
         conexion.commit()
         cursor.close()
