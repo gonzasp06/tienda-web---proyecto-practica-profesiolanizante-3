@@ -29,13 +29,13 @@
                     <li class="nav-item dropdown">
                         <div class="dropdown">
                             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            Categorías
+                                Categorías
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <li><a class="dropdown-item" href="/TV_Video">TV & Video</a></li>
-                            <li><a class="dropdown-item" href="/Climatizacion">Climatización</a></li>
-                            <li><a class="dropdown-item" href="/Electrodomesticos">Electrodomésticos</a></li>
-                            <li><a class="dropdown-item" href="/Tecnologia">Tecnología</a></li>
+                                <li><a class="dropdown-item" href="/TV_Video">TV & Video</a></li>
+                                <li><a class="dropdown-item" href="/Climatizacion">Climatización</a></li>
+                                <li><a class="dropdown-item" href="/Electrodomesticos">Electrodomésticos</a></li>
+                                <li><a class="dropdown-item" href="/Tecnologia">Tecnología</a></li>
                             </ul>
                         </div>
                     </li>
@@ -43,27 +43,27 @@
             </div>
         </nav>
     </header>
-    
-    <h1>Nuestros Productos</h1>
+        
+    <h1>{{ categoria }}</h1>
     <div class="container">
         <div class="row row-cols-2">
-          {% for producto in productos %}
+            {% for producto in productos %}
             <div class="col">
                 <div class="card">
-                    <img src="{{ producto[6] }}" class="card-img-top" alt="Imagen del producto">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ producto[1] }}</h5>
-                            <p class="card-text">Descripción: {{ producto[2] }}</p>
-                            <p class="card-text">Categoria: {{ producto[3] }}</p>
-                            <p class="card-text">Precio: {{ producto[4] }}</p>
-                            <p class="card-text">Cantidad disponible: {{ producto[5] }}</p>
-                        </div>
+                    <img src="{{ producto[6] }}" class="card-img-top" alt="Foto del producto">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ producto[1] }}</h5>
+                        <p class="card-text">Descripción: {{ producto[2] }}</p>
+                        <p class="card-text">Categoría: {{ producto[3] }}</p>
+                        <p class="card-text">Precio: {{ producto[4] }}</p>
+                        <p class="card-text">Cantidad disponible: {{ producto[5] }}</p>
+                    </div>
                 </div>
             </div>
-          {% endfor %}
+            {% endfor %}
         </div>
     </div>
-    
+        
 
     <footer class="text-body-secondary py-5">
         <div class="container">

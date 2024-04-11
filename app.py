@@ -27,11 +27,6 @@ def verificar_conexion():
         return 'Error de conexión'
 
 
-#@app.route('/')
-#def incio():
-#    return render_template('index.html')
-
-
 def obtener_productos():
     cursor= conexion.cursor()
     consulta= 'SELECT * FROM catalogo.producto;'
@@ -46,6 +41,18 @@ def mostrar_catalogo():
     productos = obtener_productos()
     return render_template('index.html', productos=productos) 
 
+def filtrar_categoria(categoria_seleccionada):
+    cursor = conexion.cursor()
+    consulta = 'SELECT * FROM catalogo.producto WHERE categoria = %s;'
+    cursor.execute(consulta, (categoria_seleccionada, ))
+    productos = cursor.fetchall()
+    cursor.close()
+    return productos
+
+@app.route('/<categoria>')
+def mostrar_catalogo_categoria(categoria):
+    productos = filtrar_categoria(categoria)
+    return render_template('categoria.html', productos=productos, categoria=categoria)
 
 # Ruta para cargar un nuevo producto
 @app.route('/formulario')

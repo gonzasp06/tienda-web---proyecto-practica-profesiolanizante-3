@@ -3,33 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cargar Producto</title>
+    <title>SmartHouse</title>
     <!--Estilo CSS-->
     <link rel="stylesheet"  href="{{ url_for('static', filename='style.css') }}">
     <!-- Vinculacion con Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Scripts de Bootstrap y jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </head>
 <body>
     <header data-bs-theme="dark" class="navbar-dark bg-dark shadow-sm">
-        <h1 class="text-light">Catalogo de productos</h1>
+        <h1 class="text-light">SmartHouse</h1>
         <!-- Navbar de Bootstrap -->
-        <nav class="navbar navbar-expand-lg ">
-            
+        <nav class="navbar navbar-expand-lg "> 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <ul class="nav">
                         <li class="nav-item active">    
                             <a class="nav-link active navbar-brand d-flex align-items-center" href="/">Inicio</a>
                         </li>
-        
                         <li class="nav-item">
-                            <a class="nav-link navbar-brand d-flex align-items-center" href="/formulario">Publicar producto</a>
+                          <a class="nav-link navbar-brand d-flex align-items-center" href="/formulario">Publicar producto</a>
                         </li>
-        
-                        <li class="nav-item">
-                            <a class="nav-link navbar-brand d-flex align-items-center" href="/catalogo">Ver catalogo</a>
-                        </li>
+                        <li class="nav-item dropdown">
+                            <div class="dropdown">
+                              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                Categorías
+                              </button>
+                              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <li><a class="dropdown-item" href="/TV_Video">TV & Video</a></li>
+                                <li><a class="dropdown-item" href="/Climatizacion">Climatización</a></li>
+                                <li><a class="dropdown-item" href="/Electrodomesticos">Electrodomésticos</a></li>
+                                <li><a class="dropdown-item" href="/Tecnologia">Tecnología</a></li>
+                              </ul>
+                            </div>
+                          </li>
                     </ul>
                 </ul>
             </div>
