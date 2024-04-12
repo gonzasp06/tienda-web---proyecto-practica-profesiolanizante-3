@@ -6,6 +6,7 @@ from database import conectar_base_datos
 #Subir foto tipo archivo al servidor
 import os
 from werkzeug.utils import secure_filename 
+from math import ceil
 
 app = Flask(__name__)
 
@@ -35,11 +36,27 @@ def obtener_productos():
     cursor.close()
     return productos
 
+productos_por_pagina = 8
+
+def obtener_productos_paginados(pagina):
+    inicio = (pagina - 1) * productos_por_pagina
+    fin = inicio + productos_por_pagina
+    cursor = conexion.cursor()
+    consulta = 'SELECT * FROM catalogo.producto LIMIT %s, %s;'
+    cursor.execute(consulta, (inicio, productos_por_pagina))
+    productos = cursor.fetchall()
+    cursor.close()
+    return productos
+
 # Ruta raíz
 @app.route('/')
-def mostrar_catalogo():
-    productos = obtener_productos()
-    return render_template('index.html', productos=productos) 
+@app.route('/<int:pagina>')
+def mostrar_catalogo(pagina=1):
+    productos = obtener_productos_paginados(pagina)
+    total_productos = len(obtener_productos())  
+    total_paginas = ceil(total_productos / productos_por_pagina)  # Calcular el total de páginas necesarias
+    return render_template('index.html', productos=productos, pagina_actual=pagina, total_paginas=total_paginas)
+
 
 def filtrar_categoria(categoria_seleccionada):
     cursor = conexion.cursor()
