@@ -40,29 +40,36 @@
                         </div>
                     </li>
                 </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/acceso">Acceder</a>
+                    </li>
+                </ul>
             </div>
         </nav>
     </header>
     
     <h1>Nuestros Productos</h1>
     <div class="container">
-        <div class="row row-cols-2">
-          {% for producto in productos %}
+        <div class="row row-cols-3">
+            {% for producto in productos %}
             <div class="col">
                 <div class="card">
-                    <img src="{{ producto[6] }}" class="card-img-top" alt="Imagen del producto">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ producto[1] }}</h5>
-                            <p class="card-text">Descripción: {{ producto[2] }}</p>
-                            <p class="card-text">Categoria: {{ producto[3] }}</p>
-                            <p class="card-text">Precio: {{ producto[4] }}</p>
-                            <p class="card-text">Cantidad disponible: {{ producto[5] }}</p>
-                        </div>
+                    <div class="image-container">
+                        <img src="{{ producto[6] }}" class="card-img-top" alt="Imagen del producto">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ producto[1] }}</h5>
+                        <p class="card-text">{{ producto[2] }}</p>
+                        <p class="card-text">Precio: {{ producto[4] }}</p>
+                        <p class="card-text">Cantidad disponible: {{ producto[5] }}</p>
+                    </div>
                 </div>
             </div>
-          {% endfor %}
+            {% endfor %}
         </div>
     </div>
+
 
     <nav aria-label="Page navigation example" class="d-flex justify-content-center">
         <ul class="pagination">
