@@ -42,7 +42,7 @@
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="modal" data-bs-target="#cuentaModal">Acceder</a>
+                        <a class="nav-link" href="/acceso">Acceder</a>
                     </li>
                 </ul>
             </div>
@@ -51,39 +51,22 @@
     
     <h1>Nuestros Productos</h1>
     <div class="container">
-        <div class="row row-cols-2">
-          {% for producto in productos %}
+        <div class="row row-cols-3">
+            {% for producto in productos %}
             <div class="col">
                 <div class="card">
-                    <img src="{{ producto[6] }}" class="card-img-top" alt="Imagen del producto">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ producto[1] }}</h5>
-                            <p class="card-text">Descripción: {{ producto[2] }}</p>
-                            <p class="card-text">Categoria: {{ producto[3] }}</p>
-                            <p class="card-text">Precio: {{ producto[4] }}</p>
-                            <p class="card-text">Cantidad disponible: {{ producto[5] }}</p>
-                        </div>
+                    <div class="image-container">
+                        <img src="{{ producto[6] }}" class="card-img-top" alt="Imagen del producto">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ producto[1] }}</h5>
+                        <p class="card-text">{{ producto[2] }}</p>
+                        <p class="card-text">Precio: {{ producto[4] }}</p>
+                        <p class="card-text">Cantidad disponible: {{ producto[5] }}</p>
+                    </div>
                 </div>
             </div>
-          {% endfor %}
-        </div>
-    </div>
-
-    <!-- Modal para la cuenta -->
-    <div class="modal fade" id="cuentaModal" tabindex="-1" aria-labelledby="cuentaModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body d-flex justify-content-center flex-column align-items-center">
-                    <button type="button" class="btn btn-primary btn-lg mb-2 w-100">Ingresar</button>
-                    <button type="button" class="btn btn-secondary btn-lg w-100">Crear cuenta</button>
-                </div>                
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 
