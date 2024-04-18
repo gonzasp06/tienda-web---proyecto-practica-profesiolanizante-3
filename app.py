@@ -72,6 +72,7 @@ def mostrar_catalogo_categoria(categoria):
     productos = filtrar_categoria(categoria)
     return render_template('categoria.html', productos=productos, categoria=categoria)
 
+###################################################################
 @app.route('/nuevo_usuario')
 def crear_usuario():
     return render_template('f_nuevo_usuario.html')
@@ -99,17 +100,25 @@ def cargar_usuario():
     else:
         return jsonify({"error": "Método no permitido"}), 405
 
+
 @app.route('/verificar', methods=['GET', 'POST'])
 def verificar_usuario():
     if request.method == 'POST':
         email = request.form['email']
+        contraseña = request.form['contraseña']
         usuario = buscar_usuario(email)
         if usuario:
-            return jsonify({"mensaje": "Usuario encontrado", "usuario": usuario}), 200
+            usuario['nombre'] = usuario['nombre']
+            mensaje = f"¡Usuario encontrado! Hola, {usuario['nombre']}."
+            print(mensaje)
+            return jsonify({"mensaje": mensaje, "usuario": usuario}), 200
+        if usuario:
+            return jsonify({"mensaje": "Hola", "usuario": usuario}), 200
         else:
-            return jsonify({"error": "Usuario no encontrado"}), 404
+            return jsonify({"error": "Credenciales incorrectas"}), 401
     else:
         return jsonify({"error": "Método no permitido"}), 405
+
 
 def buscar_usuario(email):
     cursor = conexion.cursor()
@@ -144,7 +153,7 @@ def acceso_cuentas():
 @app.route('/acceso')
 def render_acceso():
     return render_template('acceso.html') 
-#######################################################
+######################################################################
 
 # Ruta para cargar un nuevo producto
 @app.route('/formulario')
