@@ -14,37 +14,40 @@
 </head>
 
 <body>
-    <header data-bs-theme="dark" class="navbar-dark bg-dark shadow-sm">
-        <h1 class="text-light">SmartHouse</h1>
-        <!-- Navbar de Bootstrap -->
-        <nav class="navbar navbar-expand-lg"> 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item active">    
-                        <a class="nav-link" href="/">Inicio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/formulario">Publicar producto</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            Categorías
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <li><a class="dropdown-item" href="/TV_Video">TV & Video</a></li>
-                            <li><a class="dropdown-item" href="/Climatizacion">Climatización</a></li>
-                            <li><a class="dropdown-item" href="/Electrodomesticos">Electrodomésticos</a></li>
-                            <li><a class="dropdown-item" href="/Tecnologia">Tecnología</a></li>
-                            </ul>
-                        </div>
-                    </li>
-                </ul>
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
+    <header>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="/"><img src="/static/images/Logo.png" alt="Smarthouse Logo" class="mr-2"></a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/formulario">Publicar producto</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <div c
+                            lass="dropdown">
+                              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                Categorías
+                              </button>
+                              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <li><a class="dropdown-item" href="/TV_Video">TV & Video</a></li>
+                                <li><a class="dropdown-item" href="/Climatizacion">Climatización</a></li>
+                                <li><a class="dropdown-item" href="/Electrodomesticos">Electrodomésticos</a></li>
+                                <li><a class="dropdown-item" href="/Tecnologia">Tecnología</a></li>
+                              </ul>
+                            </div>
+                        </li>                                             
+                    </ul>
+                    <span class="navbar-text">
                         <a class="nav-link" href="/acceso">Acceder</a>
-                    </li>
-                </ul>
+                    </span>
+                </div>
             </div>
         </nav>
     </header>
