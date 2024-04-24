@@ -1,20 +1,16 @@
-from flask import Flask, request, jsonify, render_template, session, redirect, url_for
+from flask import Flask, request, jsonify, render_template, session, redirect, url_for  
 import mysql.connector
-
 from database import conectar_base_datos
-
-#Subir foto tipo archivo al servidor
-import os
+import os #Subir foto tipo archivo al servidor
 from werkzeug.utils import secure_filename 
-from math import ceil
-import bcrypt
+from math import ceil #calcular el número de páginas
+import bcrypt #encriptar
 
 app = Flask(__name__)
 
 # Carpeta para imágenes
 UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
 
 # conexión a base de datos
 conexion = conectar_base_datos()
@@ -27,7 +23,6 @@ def verificar_conexion():
         return 'Conexión exitosa'
     else:
         return 'Error de conexión'
-
 
 def obtener_productos():
     cursor= conexion.cursor()
@@ -72,7 +67,8 @@ def mostrar_catalogo_categoria(categoria):
     productos = filtrar_categoria(categoria)
     return render_template('categoria.html', productos=productos, categoria=categoria)
 
-###################################################################
+########### GESTIÓN DE CUENTAS - NUEVOS USUARIOS Y VERIFICACION ############
+
 @app.route('/nuevo_usuario')
 def crear_usuario():
     return render_template('f_nuevo_usuario.html')
@@ -93,13 +89,12 @@ def cargar_usuario():
         # Cifrar la contraseña
         hashed_password = cifrar_contraseñas(datos_usuario['contraseña'])
         cursor = conexion.cursor()
-        cursor.execute("INSERT INTO usuario (nombre, apellido, email, contraseña) VALUES (%s, %s, %s, %s)",(datos_usuario['nombre'], datos_usuario['apellido'], datos_usuario['email'], hashed_password))
+        cursor.execute("INSERT INTO usuario (nombre, apellido, email, contraseña, is_admin) VALUES (%s, %s, %s, %s, %s)",(datos_usuario['nombre'], datos_usuario['apellido'], datos_usuario['email'], hashed_password, 0))
         conexion.commit()
         cursor.close()
         return jsonify({"mensaje": "Cuenta creada"}), 200
     else:
         return jsonify({"error": "Método no permitido"}), 405
-
 
 @app.route('/verificar', methods=['GET', 'POST'])
 def verificar_usuario():
@@ -118,7 +113,6 @@ def verificar_usuario():
             return jsonify({"error": "Credenciales incorrectas"}), 401
     else:
         return jsonify({"error": "Método no permitido"}), 405
-
 
 def buscar_usuario(email):
     cursor = conexion.cursor()
@@ -153,12 +147,14 @@ def acceso_cuentas():
 @app.route('/acceso')
 def render_acceso():
     return render_template('acceso.html') 
-######################################################################
+
+###################### CARGA DE PRODUCTOS ##################################################r
 
 # Ruta para cargar un nuevo producto
 @app.route('/formulario')
 def carga_producto():
     return render_template('formulario_carga_producto.html')
+
 @app.route('/cargar_producto', methods=['POST'])
 def cargar_producto():
     if request.method == 'POST':
@@ -167,9 +163,7 @@ def cargar_producto():
         categoria = request.form['categoria']
         precio = request.form['precio']
         cantidad = request.form['cantidad']
-
         foto = request.files['foto']
-        
         # Guardar la imagen en el sistema de archivos
         if foto:
             filename = secure_filename(foto.filename)
@@ -177,7 +171,6 @@ def cargar_producto():
             foto.save(ruta_imagen)
         else:
             ruta_imagen = None
-
         # Ingresar info a la BD
         cursor = conexion.cursor()
         consulta = "INSERT INTO producto (nombre, descripcion, categoria, precio, cantidad, foto) VALUES (%s, %s, %s, %s, %s, %s)"
@@ -190,6 +183,41 @@ def cargar_producto():
     else:
         return jsonify({"error": "Método no permitido"}), 405
 
+########### GESTIÓN DE CUENTAS - ACTUALIZAR ROLES Y ELIMINAR CUENTAS ############R
+
+@app.route('/usuarios')
+def usuarios():
+    usuarios = obtener_usuarios()
+    return render_template('gestion_usuarios.html', usuarios=usuarios)
+
+def obtener_usuarios():
+    cursor = conexion.cursor()
+    consulta = 'SELECT idusuario, nombre, apellido, email, is_admin FROM catalogo.usuario;'
+    cursor.execute(consulta )
+    usuarios = cursor.fetchall()
+    cursor.close()
+    return usuarios
+
+@app.route('/actualizar_rol/<int:usuario_id>', methods=['POST'])
+def actualizar_rol(usuario_id):
+    nuevo_estado = request.json['isAdmin']
+    cursor = conexion.cursor()
+    accion = 'UPDATE catalogo.usuario SET is_admin = %s WHERE idusuario = %s;'
+    cursor.execute(accion, (nuevo_estado, usuario_id))
+    conexion.commit()
+    cursor.close()
+    return "Rol de usuario actualizado", 200
+
+@app.route('/eliminar/<int:usuario_id>', methods=['POST'])
+def eliminar_usuario(usuario_id):
+    cursor = conexion.cursor()
+    accion = 'DELETE FROM catalogo.usuario WHERE idusuario = %s;'
+    cursor.execute(accion, (usuario_id,))
+    conexion.commit()
+    cursor.close()
+    return jsonify({"mensaje": "Usuario eliminado correctamente", "usuario_id": usuario_id})
+
+#############################################################################################
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartHouse</title>
+    <!--Estilo CSS-->
+    <link rel="stylesheet"  href="{{ url_for('static', filename='style.css') }}">
+    <!-- Vinculacion con Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Scripts de Bootstrap y jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/"><img src="/static/images/Logo.png" alt="Smarthouse Logo" class="mr-2"></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/formulario">Publicar producto</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Categorías
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" href="/TV_Video">TV & Video</a></li>
+                                    <li><a class="dropdown-item" href="/Climatizacion">Climatización</a></li>
+                                    <li><a class="dropdown-item" href="/Electrodomesticos">Electrodomésticos</a></li>
+                                    <li><a class="dropdown-item" href="/Tecnologia">Tecnología</a></li>
+                                </ul>
+                            </div>
+                        </li>                                             
+                    </ul>
+                    <span class="navbar-text">
+                        <a class="nav-link" href="/acceso">Acceder</a>
+                    </span>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <h1>Listado de Usuarios</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Email</th>
+                    <th>Administrador</th>
+                    <th>Modificar</th>
+                    <th>Eliminar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario[1] }}</td>
+                    <td>{{ usuario[2] }}</td>
+                    <td>{{ usuario[3] }}</td>
+                    <td>{{ "Si" if usuario[4] else "No" }}</td>
+                    <td class="text-end">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="toggle{{ usuario[0] }}" {% if usuario[4] %}checked{% endif %} onchange="toggleAdmin('{{ usuario[0] }}')">
+                            <label class="form-check-label" for="toggle{{ usuario[0] }}">Admin</label>
+                        </div>
+                    </td>
+                    <td class="text-end">
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmarEliminacionModal{{ usuario[0] }}">
+                            Eliminar
+                        </button>
+                        <!-- ventanita emergente para confirmar-->
+                        <div class="modal fade" id="confirmarEliminacionModal{{ usuario[0] }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5">Advertencia...</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body"> 
+                                        <p>¿Estás seguro que deseas eliminar a {{ usuario[1] }}? </p>
+                                        <p>Esta acción no puede deshacerse.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Salir</button>
+                                        <button type="button" class="btn btn-danger" onclick="eliminarUsuario('{{ usuario[0] }}')">Confirmar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // CAMBIAR ROLES
+        function toggleAdmin(userId) {
+            var isChecked = document.getElementById("toggle" + userId).checked;
+            fetch("/actualizar_rol/" + userId, {
+                method: "POST",
+                body: JSON.stringify({ isAdmin: isChecked }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log("Rol del usuario actualizado exitosamente");
+                    location.reload();// actualiza pag
+                } 
+                else {
+                    console.error("Error al actualizar el rol del usuario");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        }
+        // ELIMINAR USUARIOS
+        function eliminarUsuario(userId) {
+            console.log("Eliminar usuario con ID:", userId);
+            fetch("/eliminar/" + userId, {
+                method: "POST"
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log("Usuario eliminado correctamente");
+                    var modal = new bootstrap.Modal(document.getElementById('confirmarEliminacionModal' + userId));
+                    modal.show();
+                    location.reload();
+                } else {
+                    console.error("Error al eliminar el usuario");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        }
+    </script>
+</body>
+</html>
