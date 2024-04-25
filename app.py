@@ -53,7 +53,6 @@ def mostrar_catalogo(pagina=1):
     total_paginas = ceil(total_productos / productos_por_pagina)  # Calcular el total de páginas necesarias
     return render_template('index.html', productos=productos, pagina_actual=pagina, total_paginas=total_paginas)
 
-
 def filtrar_categoria(categoria_seleccionada):
     cursor = conexion.cursor()
     consulta = 'SELECT * FROM catalogo.producto WHERE categoria = %s;'
@@ -67,7 +66,7 @@ def mostrar_catalogo_categoria(categoria):
     productos = filtrar_categoria(categoria)
     return render_template('categoria.html', productos=productos, categoria=categoria)
 
-########### GESTIÓN DE CUENTAS - NUEVOS USUARIOS Y VERIFICACION ############
+######### GESTIÓN DE CUENTAS - NUEVOS USUARIOS Y VERIFICACION #########
 
 @app.route('/nuevo_usuario')
 def crear_usuario():
@@ -148,7 +147,7 @@ def acceso_cuentas():
 def render_acceso():
     return render_template('acceso.html') 
 
-###################### CARGA DE PRODUCTOS ##################################################r
+###################### CARGA DE PRODUCTOS #############################
 
 # Ruta para cargar un nuevo producto
 @app.route('/formulario')
@@ -218,6 +217,34 @@ def eliminar_usuario(usuario_id):
     return jsonify({"mensaje": "Usuario eliminado correctamente", "usuario_id": usuario_id})
 
 #############################################################################################
+
+#serch (buscador de productos)
+@app.route('/buscar', methods=['GET'])
+def buscar():
+    q = request.args.get('q')
+    if q:
+        cursor = conexion.cursor()
+        consulta = 'SELECT * FROM catalogo.producto WHERE nombre LIKE %s;'
+        cursor.execute(consulta, ('%' + q + '%',))
+        productos = cursor.fetchall()
+        cursor.close()
+        return render_template('index.html', productos=productos, busqueda=q)
+    else: 
+        return redirect(url_for('mostrar_catalogo'))
+    
+@app.route('/<int:pagina>/ordenar_por_precio', methods=['GET'])
+def ordenar_por_precio():
+    productos_ordenados = ordenar_productos_por_precio()
+    return render_template('index.html', productos=productos_ordenados)
+    
+#Ordenar productos por precio (filtro)
+def ordenar_productos_por_precio():
+    cursor = conexion.cursor()
+    consulta = 'SELECT * FROM catalogo.producto ORDER BY precio ASC;'
+    cursor.execute(consulta)
+    productos = cursor.fetchall()
+    cursor.close()
+    return productos
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
