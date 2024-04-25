@@ -4,6 +4,6 @@ def conectar_base_datos():
     return mysql.connector.connect(
         host="localhost",  
         user="root",  
-        password="61200329",  
+        password="123456789",  
         database="catalogo" 
     )
