@@ -3,10 +3,23 @@ import mysql.connector
 from database import conectar_base_datos
 import os #Subir foto tipo archivo al servidor
 from werkzeug.utils import secure_filename 
-from math import ceil #calcular el número de páginas
+from math import ceil #calcular el numero de paginas
 import bcrypt #encriptar
+from flask_mail import Mail, Message #enviar email
 
+# Crear la instancia de la aplicación Flask
 app = Flask(__name__)
+
+# Configuración de Flask-Mail
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USERNAME'] = 'smarthouse889@gmail.com'
+app.config['MAIL_PASSWORD'] = 'qyyj qqnn ossz vlob'
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_DEFAULT_SENDER'] = 'smarthouse889@gmail.com'
+
+# Inicializar Flask-Mail
+mail = Mail(app)
 
 # Carpeta para imágenes
 UPLOAD_FOLDER = 'static/uploads'
@@ -92,6 +105,7 @@ def cargar_usuario():
         cursor.execute("INSERT INTO usuario (nombre, apellido, email, contraseña, is_admin) VALUES (%s, %s, %s, %s, %s)",(datos_usuario['nombre'], datos_usuario['apellido'], datos_usuario['email'], hashed_password, 0))
         conexion.commit()
         cursor.close()
+        enviar_correo(datos_usuario['email'])
         return jsonify({"mensaje": "Cuenta creada"}), 200
     else:
         return jsonify({"error": "Método no permitido"}), 405
@@ -107,8 +121,6 @@ def verificar_usuario():
             mensaje = f"¡Usuario encontrado! Hola, {usuario['nombre']}."
             print(mensaje)
             return jsonify({"mensaje": mensaje, "usuario": usuario}), 200
-        if usuario:
-            return jsonify({"mensaje": "Hola", "usuario": usuario}), 200
         else:
             return jsonify({"error": "Credenciales incorrectas"}), 401
     else:
@@ -148,8 +160,17 @@ def acceso_cuentas():
 def render_acceso():
     return render_template('acceso.html') 
 
-###################### CARGA DE PRODUCTOS ##################################################r
+###### Mandar un correo de confirmacion de cuenta creada
 
+def enviar_correo(email):
+    mensaje = render_template('confirm_email.html', email=email)
+    subject = 'Confirmación de correo'
+    destinatario = [email]
+    correo = Message(subject, recipients=destinatario)
+    correo.html = mensaje
+    mail.send(correo)
+
+###################### CARGA DE PRODUCTOS ##################################################r
 # Ruta para cargar un nuevo producto
 @app.route('/formulario')
 def carga_producto():
