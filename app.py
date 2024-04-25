@@ -18,7 +18,7 @@ app.config['MAIL_PASSWORD'] = 'qyyj qqnn ossz vlob'
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_DEFAULT_SENDER'] = 'smarthouse889@gmail.com'
 
-# Inicializar Flask-Mail
+# Inicializar Flask-Mail  
 mail = Mail(app)
 
 # Carpeta para imágenes
