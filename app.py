@@ -6,6 +6,7 @@ from werkzeug.utils import secure_filename
 from math import ceil #calcular el numero de paginas
 import bcrypt #encriptar
 from flask_mail import Mail, Message #enviar email
+from flask_session import Session
 
 # Crear la instancia de la aplicación Flask
 app = Flask(__name__)
@@ -17,9 +18,15 @@ app.config['MAIL_USERNAME'] = 'smarthouse889@gmail.com'
 app.config['MAIL_PASSWORD'] = 'qyyj qqnn ossz vlob'
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_DEFAULT_SENDER'] = 'smarthouse889@gmail.com'
-
 # Inicializar Flask-Mail  
 mail = Mail(app)
+
+#configuracion de la sesion
+app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_FILE_DIR'] = '/tmp/flask_session'
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_USE_SIGNER'] = True
+Session(app)
 
 # Carpeta para imágenes
 UPLOAD_FOLDER = 'static/uploads'
