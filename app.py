@@ -7,6 +7,7 @@ from math import ceil #calcular el numero de paginas
 import bcrypt #encriptar
 from flask_mail import Mail, Message #enviar email
 from flask_session import Session
+from datetime import datetime
 
 # Crear la instancia de la aplicación Flask
 app = Flask(__name__)
@@ -25,7 +26,7 @@ mail = Mail(app)
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_FILE_DIR'] = '/tmp/flask_session'
 app.config['SESSION_PERMANENT'] = False
-app.config['SESSION_USE_SIGNER'] = True
+app.config['SESSION_USE_SIGNER'] = False
 Session(app)
 
 # Carpeta para imágenes
@@ -127,6 +128,8 @@ def verificar_usuario():
             usuario['nombre'] = usuario['nombre']
             mensaje = f"¡Usuario encontrado! Hola, {usuario['nombre']}."
             print(mensaje)
+            session['idusuario'] = usuario['id']
+            registrar_sesion(usuario['id'])
             return jsonify({"mensaje": mensaje, "usuario": usuario}), 200
         else:
             return jsonify({"error": "Credenciales incorrectas"}), 401
@@ -148,6 +151,13 @@ def buscar_usuario(email):
         }
     else:
         return None
+
+def registrar_sesion(idusuario):
+    cursor = conexion.cursor()
+    fecha_hora = datetime.now()
+    cursor.execute('INSERT INTO sesiones(fecha_sesion, idusuario) VALUES (%s, %s)', (fecha_hora, idusuario))
+    conexion.commit()
+    cursor.close()
 
 @app.route('/cuenta', methods=['GET', 'POST'])
 def acceso_cuentas():
