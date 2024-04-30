@@ -1,12 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido a SmartHouse</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #ffffff; /* Texto en color blanco */
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            text-align: center;
+        }
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        .email {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <div class="container py-6">
+    <div class="container">
         <h1>Bienvenido a SmartHouse</h1>
         <p>Gracias por registrarte en nuestra página. ¡Estamos emocionados de tenerte con nosotros!</p>
-        <p>Tu dirección de correo electrónico registrada es: {{ email }}</p>
+        <p>Tu dirección de correo electrónico registrada es: <span class="email">{{ email }}</span></p>
         <p>Si tienes alguna pregunta o necesitas ayuda, no dudes en ponerte en contacto con nosotros.</p>
         <p>¡Disfruta tu experiencia en nuestra web!</p>
     </div>
