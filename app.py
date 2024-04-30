@@ -226,24 +226,26 @@ def obtener_usuarios():
     cursor.close()
     return usuarios
 
-@app.route('/actualizar_rol/<int:usuario_id>', methods=['POST'])
-def actualizar_rol(usuario_id):
-    nuevo_estado = request.json['isAdmin']
-    cursor = conexion.cursor()
-    accion = 'UPDATE catalogo.usuario SET is_admin = %s WHERE idusuario = %s;'
-    cursor.execute(accion, (nuevo_estado, usuario_id))
-    conexion.commit()
-    cursor.close()
-    return "Rol de usuario actualizado", 200
+#### #HISTORIAL DE SESIONES DE USUARIO
 
-@app.route('/eliminar/<int:usuario_id>', methods=['POST'])
-def eliminar_usuario(usuario_id):
+@app.route('/historial_sesiones/<int:usuario_id>', methods=['GET'])
+def mostrar_sesiones(usuario_id):
     cursor = conexion.cursor()
-    accion = 'DELETE FROM catalogo.usuario WHERE idusuario = %s;'
+    accion = 'SELECT fecha_sesion FROM catalogo.sesiones WHERE idusuario = %s'
     cursor.execute(accion, (usuario_id,))
+    sesiones = cursor.fetchall()
+    usuario = obtener_nombre_usuario(usuario_id)
     conexion.commit()
     cursor.close()
-    return jsonify({"mensaje": "Usuario eliminado correctamente", "usuario_id": usuario_id})
+    return render_template('historial_sesiones.html', sesiones=sesiones, nombre_usuario=usuario)
+
+def obtener_nombre_usuario(usuario_id):
+    cursor = conexion.cursor()
+    consulta = 'SELECT nombre FROM catalogo.usuario WHERE idusuario = %s;'
+    cursor.execute(consulta, (usuario_id,))
+    nombre = cursor.fetchone()[0]
+    cursor.close()
+    return nombre
 
 #############################################################################################
 

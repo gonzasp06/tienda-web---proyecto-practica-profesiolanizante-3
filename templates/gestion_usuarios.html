@@ -60,6 +60,7 @@
                     <th>Email</th>
                     <th>Administrador</th>
                     <th>Modificar</th>
+                    <th>Historial</th>
                     <th>Eliminar</th>
                 </tr>
             </thead>
@@ -73,8 +74,13 @@
                     <td class="text-end">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="toggle{{ usuario[0] }}" {% if usuario[4] %}checked{% endif %} onchange="toggleAdmin('{{ usuario[0] }}')">
-                            <label class="form-check-label" for="toggle{{ usuario[0] }}">Admin</label>
+                            <label class="form-check-label" for="toggle{{ usuario[0] }}"></label>
                         </div>
+                    </td>
+                    <td>
+                        <a href="/historial_sesiones/{{ usuario[0] }}" class="btn btn-success text-white">
+                            Sesiones
+                        </a>
                     </td>
                     <td class="text-end">
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmarEliminacionModal{{ usuario[0] }}">
