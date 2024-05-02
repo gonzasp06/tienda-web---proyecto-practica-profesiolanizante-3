@@ -101,7 +101,7 @@ def cifrar_contraseñas(contraseña):
 
 #verificar contraseña cifrada
 def verificar_contraseña(contraseña, hashed_password):
-    return bcrypt.checkpw(contraseña.encode('utf-8'), hashed_password)
+    return bcrypt.checkpw(contraseña.encode('utf-8'), hashed_password.encode('utf-8'))
 
 @app.route('/cargar_usuario', methods=['POST'])
 def cargar_usuario():
@@ -118,32 +118,33 @@ def cargar_usuario():
     else:
         return jsonify({"error": "Método no permitido"}), 405
 
-#LOGIN
-@app.route('/verificar', methods=['GET', 'POST'])
+@app.route('/verificar', methods=['POST'])
 def verificar_usuario():
     if request.method == 'POST':
         email = request.form['email']
-        contraseña = request.form['contraseña']
+        contraseña_verificar = request.form['contraseña']
         usuario = buscar_usuario(email)
         if usuario:
-            usuario['nombre'] = usuario['nombre']
-            mensaje = f"¡Usuario encontrado! Hola, {usuario['nombre']}."
-            print(mensaje)
-            session['idusuario'] = usuario['id']
-            session['rol'] = usuario['rol']
-            registrar_sesion(usuario['id'])
-            if session['rol'] == 1:
-                print('Administrador')
-                #return render_template('admin.html')
-            elif session['rol'] == 0:
-                print('Cliente')
-                #return render_template('cliente.html')
-            return jsonify({"mensaje": mensaje, "usuario": usuario}), 200
+            contraseña = (usuario['contraseña'])
+            # Verificando la contraseña proporcionada con la almacenada
+            if verificar_contraseña(contraseña_verificar, contraseña) == True:
+                mensaje = f"¡Usuario encontrado! Hola, {usuario['nombre']}."
+                session['idusuario'] = usuario['id']
+                session['rol'] = usuario['rol']
+                registrar_sesion(usuario['id'])
+                if session['rol'] == 1:
+                    print('Administrador')
+                elif session['rol'] == 0:
+                    print('Cliente')
+                return jsonify({"mensaje": mensaje, "usuario": usuario}), 200
+            else:
+                return jsonify({"error": "Credenciales incorrectas"}), 401
+            
         else:
             return jsonify({"error": "Credenciales incorrectas"}), 401
     else:
         return jsonify({"error": "Método no permitido"}), 405
-
+    
 def buscar_usuario(email):
     cursor = conexion.cursor()
     cursor.execute("SELECT * FROM catalogo.usuario WHERE email = %s", (email,))

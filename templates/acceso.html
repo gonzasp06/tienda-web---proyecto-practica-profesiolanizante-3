@@ -97,7 +97,9 @@
             })
             .then(response => response.json())
             .then(data => {
+            if (data.mensaje) {
                 document.getElementById("resultado").innerText = data.mensaje;
+                var usuarioLoggeado = true;
                 setTimeout(function() {
                     // Ocultar el spinner
                     document.getElementById("spinner").classList.add("d-none");
@@ -105,11 +107,15 @@
                     document.getElementById("btn-acceder").removeAttribute("disabled");
                     window.location.href = "/";
                 }, 1000);
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                document.getElementById("resultado").innerText = "Error al acceder";
-            });
+            } else {
+                // Mostrar el mensaje de error
+                document.getElementById("resultado").innerText = "Credenciales incorrectas";
+                // Ocultar el spinner
+                document.getElementById("spinner").classList.add("d-none");
+                // Habilitar el botón
+                document.getElementById("btn-acceder").removeAttribute("disabled");
+            }
+        })
         });
     </script>
 </body>
