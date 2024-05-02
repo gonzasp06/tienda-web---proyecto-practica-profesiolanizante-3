@@ -48,11 +48,8 @@
                             </div>
                         </li>                                             
                     </ul>
-                    <span class="navbar-text">
-                        <a class="nav-link" href="/acceso">Iniciar sesión</a>
-                        <a class="nav-link" href="/nuevo_usuario">Registrarme</a>
-                    </span>
-                    {% if session and if session.usuario.id %}
+                    
+                    {% if session and session.get('usuario') %}
                         <div class="navigation-card">
                             <a class="tab" id="btn-perfil">
                             <svg
@@ -115,7 +112,7 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <p>Hola, {{ session['nombre_usuario'] }} {{ session['usuario']['apellido'] }}. ¿Estás seguro que deseas cerrar la sesión?</p>
+                                        <p>¿Estás seguro de que deseas cerrar la sesión?</p>
                                         <p>Al cerrar sesión, saldrás de tu cuenta.</p>
                                     </div>
                                     <div class="modal-footer">
@@ -125,6 +122,11 @@
                                 </div>
                             </div>
                         </div> 
+                    {% else %}
+                        <span class="navbar-text">
+                            <a class="nav-link" href="/acceso">Iniciar sesión</a>
+                            <a class="nav-link" href="/nuevo_usuario">Registrarme</a>
+                        </span>
                     {% endif %}
                 </div>
             </div>

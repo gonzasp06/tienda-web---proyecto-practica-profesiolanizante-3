@@ -25,7 +25,7 @@
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="/">Inicio</a>
                         </li>
-                        {% if 'rol' in session and session['rol'] == 1 %}
+                        {% if session and session.usuario and session.usuario.rol == 1 %}
                             <li class="nav-item">
                                 <a class="nav-link" href="/formulario">Publicar producto</a>
                             </li>
@@ -35,22 +35,97 @@
                         {% endif %}
                         <li class="nav-item dropdown">
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Categorías
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <li><a class="dropdown-item" href="/TV_Video">TV & Video</a></li>
-                                    <li><a class="dropdown-item" href="/Climatizacion">Climatización</a></li>
-                                    <li><a class="dropdown-item" href="/Electrodomesticos">Electrodomésticos</a></li>
-                                    <li><a class="dropdown-item" href="/Tecnologia">Tecnología</a></li>
-                                </ul>
+                              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                Categorías
+                              </button>
+                              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <li><a class="dropdown-item" href="/TV_Video">TV & Video</a></li>
+                                <li><a class="dropdown-item" href="/Climatizacion">Climatización</a></li>
+                                <li><a class="dropdown-item" href="/Electrodomesticos">Electrodomésticos</a></li>
+                                <li><a class="dropdown-item" href="/Tecnologia">Tecnología</a></li>
+                              </ul>
                             </div>
                         </li>                                             
                     </ul>
-                    <span class="navbar-text">
-                        <a class="nav-link" href="/acceso">Iniciar sesión</a>
-                        <a class="nav-link" href="/nuevo_usuario">Registrarme</a>
-                    </span>
+                    {% if session and session.get('usuario') %}
+                        <div class="navigation-card">
+                            <a class="tab" id="btn-perfil">
+                            <svg
+                                width="104"
+                                height="100"
+                                viewBox="0 0 104 100"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <rect
+                                x="21.5"
+                                y="3.5"
+                                width="60"
+                                height="60"
+                                rx="30"
+                                stroke="black"
+                                stroke-width="7"
+                                ></rect>
+                                <g clip-path="url(#clip0_41_27)">
+                                <mask
+                                    id="mask0_41_27"
+                                    style="mask-type:luminance"
+                                    maskUnits="userSpaceOnUse"
+                                    x="0"
+                                    y="61"
+                                    width="104"
+                                    height="52"
+                                >
+                                    <path
+                                    d="M0 113C0 84.2812 23.4071 61 52.1259 61C80.706 61 104 84.4199 104 113H0Z"
+                                    fill="white"
+                                    ></path>
+                                </mask>
+                                <g mask="url(#mask0_41_27)">
+                                    <path
+                                    d="M-7 113C-7 80.4152 19.4152 54 52 54H52.2512C84.6973 54 111 80.3027 111 112.749H97C97 88.0347 76.9653 68 52.2512 68H52C27.1472 68 7 88.1472 7 113H-7ZM-7 113C-7 80.4152 19.4152 54 52 54V68C27.1472 68 7 88.1472 7 113H-7ZM52.2512 54C84.6973 54 111 80.3027 111 112.749V113H97V112.749C97 88.0347 76.9653 68 52.2512 68V54Z"
+                                    fill="black"
+                                    ></path>
+                                </g>
+                                </g>
+                                <defs>
+                                <clipPath id="clip0_41_27">
+                                    <rect
+                                    width="104"
+                                    height="39"
+                                    fill="white"
+                                    transform="translate(0 61)"
+                                    ></rect>
+                                </clipPath>
+                                </defs>
+                            </svg>
+                            </a>
+                        </div>
+                        <!-- Modal para cerrar sesión -->
+                        <div class="modal" id="modal-cerrar-sesion" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Cerrar Sesión</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>¿Estás seguro de que deseas cerrar la sesión?</p>
+                                        <p>Al cerrar sesión, saldrás de tu cuenta.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color: #0544d9; color: white;">Cancelar</button>
+                                        <button id="btn-cerrar-sesion" class="btn btn-primary" style="background-color: #f35404; color: white;">Cerrar Sesión</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+                    {% else %}
+                        <span class="navbar-text">
+                            <a class="nav-link" href="/acceso">Iniciar sesión</a>
+                            <a class="nav-link" href="/nuevo_usuario">Registrarme</a>
+                        </span>
+                    {% endif %}
                 </div>
             </div>
         </nav>
@@ -115,6 +190,45 @@
                 document.getElementById("btn-acceder").removeAttribute("disabled");
             }
         })
+        });
+    </script>
+    <!-- JavaScript para abrir el modal -->
+    <script>
+        // Obtener el botón de perfil
+        var btnPerfil = document.getElementById('btn-perfil');
+        var modalCerrarSesion = document.getElementById('modal-cerrar-sesion');
+        // abrir modal
+        btnPerfil.addEventListener('click', function() {
+            modalCerrarSesion.style.display = 'block';
+        });
+        // cerrar con (X)
+        document.querySelectorAll('.btn-close').forEach(function(element) {
+            element.addEventListener('click', function() {
+                modalCerrarSesion.style.display = 'none';
+            });
+        });
+        // botón cerrar
+        document.querySelectorAll('.btn.btn-secondary').forEach(function(element) {
+            element.addEventListener('click', function() {
+                modalCerrarSesion.style.display = 'none';
+            });
+        });
+        // CIERRE DE LA SESION
+        document.getElementById('btn-cerrar-sesion').addEventListener('click', function() {
+            // Envia solicitud POST /cerrar_sesion
+            fetch('/cerrar_sesion', {
+                method: 'POST'
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Sesión cerrada exitosamente');
+                    window.location.href = '/';
+                } else { alert('error al cerrar la sesión');}
+            })
+            // .catch(error => {
+             //    console.error('Error:', error);
+             //    alert('Hubo un error al cerrar la sesión');
+            // });
         });
     </script>
 </body>
