@@ -27,6 +27,7 @@ app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_FILE_DIR'] = '/tmp/flask_session'
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_USE_SIGNER'] = False
+app.secret_key = 'smarthouse123@'
 Session(app)
 
 # Carpeta para imágenes
@@ -129,12 +130,13 @@ def verificar_usuario():
             # Verificando la contraseña proporcionada con la almacenada
             if verificar_contraseña(contraseña_verificar, contraseña) == True:
                 mensaje = f"¡Usuario encontrado! Hola, {usuario['nombre']}."
-                session['idusuario'] = usuario['id']
-                session['rol'] = usuario['rol']
+                session['usuario'] = usuario
+                print(session)
                 registrar_sesion(usuario['id'])
-                if session['rol'] == 1:
+                # Verificar si la clave 'rol' está en la sesión antes de acceder a su valor
+                if 'rol' in session and session['rol'] == 1:
                     print('Administrador')
-                elif session['rol'] == 0:
+                elif 'rol' in session and session['rol'] == 0:
                     print('Cliente')
                 return jsonify({"mensaje": mensaje, "usuario": usuario}), 200
             else:
@@ -176,7 +178,6 @@ def acceso_cuentas():
         contraseña = request.form['contraseña']
         usuario = buscar_usuario(email)
         if usuario and verificar_contraseña(contraseña, usuario['contraseña']):
-            session['usuario'] = usuario
             return redirect(url_for('index'))
         else:
             return jsonify({"error": "Credenciales incorrectas"}), 401
@@ -186,6 +187,13 @@ def acceso_cuentas():
 @app.route('/acceso')
 def render_acceso():
     return render_template('acceso.html') 
+
+@app.route('/cerrar_sesion', methods=['POST'])
+def cerrar_sesion():
+    # Eliminar la sesión del usuario
+    session.clear()
+    # Devolver una respuesta exitosa
+    return 'Sesión cerrada', 200
 
 ###### Mandar un correo de confirmacion de cuenta creada
 

@@ -56,3 +56,32 @@ a{
   object-fit: contain;
   border: 10px solid #ffffff;
 }
+/* boton de perfil */
+.navigation-card {
+  width: fit-content;
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  background-color: rgb(0, 0, 0);
+  padding: 15px 20px;
+  border-radius: 50px;
+}
+.tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+  background-color: rgb(252, 252, 252);
+  padding: 15px;
+  border-radius: 50%;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+.tab:hover {
+  background-color:  #d3d3d3 ;
+}

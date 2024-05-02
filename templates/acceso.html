@@ -99,7 +99,6 @@
             .then(data => {
             if (data.mensaje) {
                 document.getElementById("resultado").innerText = data.mensaje;
-                var usuarioLoggeado = true;
                 setTimeout(function() {
                     // Ocultar el spinner
                     document.getElementById("spinner").classList.add("d-none");
