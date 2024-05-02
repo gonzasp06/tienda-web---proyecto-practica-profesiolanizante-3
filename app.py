@@ -118,6 +118,7 @@ def cargar_usuario():
     else:
         return jsonify({"error": "Método no permitido"}), 405
 
+#LOGIN
 @app.route('/verificar', methods=['GET', 'POST'])
 def verificar_usuario():
     if request.method == 'POST':
@@ -129,7 +130,14 @@ def verificar_usuario():
             mensaje = f"¡Usuario encontrado! Hola, {usuario['nombre']}."
             print(mensaje)
             session['idusuario'] = usuario['id']
+            session['rol'] = usuario['rol']
             registrar_sesion(usuario['id'])
+            if session['rol'] == 1:
+                print('Administrador')
+                #return render_template('admin.html')
+            elif session['rol'] == 0:
+                print('Cliente')
+                #return render_template('cliente.html')
             return jsonify({"mensaje": mensaje, "usuario": usuario}), 200
         else:
             return jsonify({"error": "Credenciales incorrectas"}), 401
@@ -147,7 +155,8 @@ def buscar_usuario(email):
             'nombre': usuario[1],  
             'apellido': usuario[2], 
             'email': usuario[3],       
-            'contraseña': usuario[4]   
+            'contraseña': usuario[4],
+            'rol': usuario[5]
         }
     else:
         return None
@@ -236,6 +245,24 @@ def obtener_usuarios():
     cursor.close()
     return usuarios
 
+@app.route('/actualizar_rol/<int:usuario_id>', methods=['POST'])
+def actualizar_rol(usuario_id):
+    nuevo_estado = request.json['isAdmin']
+    cursor = conexion.cursor()
+    accion = 'UPDATE catalogo.usuario SET is_admin = %s WHERE idusuario = %s;'
+    cursor.execute(accion, (nuevo_estado, usuario_id))
+    conexion.commit()
+    cursor.close()
+    return "Rol de usuario actualizado", 200
+
+@app.route('/eliminar/<int:usuario_id>', methods=['POST'])
+def eliminar_usuario(usuario_id):
+    cursor = conexion.cursor()
+    accion = 'DELETE FROM catalogo.usuario WHERE idusuario = %s;'
+    cursor.execute(accion, (usuario_id,))
+    conexion.commit()
+    cursor.close()
+    return jsonify({"mensaje": "Usuario eliminado correctamente", "usuario_id": usuario_id})
 #### #HISTORIAL DE SESIONES DE USUARIO
 
 @app.route('/historial_sesiones/<int:usuario_id>', methods=['GET'])

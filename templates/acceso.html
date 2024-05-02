@@ -25,21 +25,25 @@
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="/">Inicio</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/formulario">Publicar producto</a>
-                        </li>
+                        {% if 'rol' in session and session['rol'] == 1 %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="/formulario">Publicar producto</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/usuarios">Gestionar cuentas</a>
+                            </li>
+                        {% endif %}
                         <li class="nav-item dropdown">
-                            <div c
-                            lass="dropdown">
-                              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                Categorías
-                              </button>
-                              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <li><a class="dropdown-item" href="/TV_Video">TV & Video</a></li>
-                                <li><a class="dropdown-item" href="/Climatizacion">Climatización</a></li>
-                                <li><a class="dropdown-item" href="/Electrodomesticos">Electrodomésticos</a></li>
-                                <li><a class="dropdown-item" href="/Tecnologia">Tecnología</a></li>
-                              </ul>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Categorías
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" href="/TV_Video">TV & Video</a></li>
+                                    <li><a class="dropdown-item" href="/Climatizacion">Climatización</a></li>
+                                    <li><a class="dropdown-item" href="/Electrodomesticos">Electrodomésticos</a></li>
+                                    <li><a class="dropdown-item" href="/Tecnologia">Tecnología</a></li>
+                                </ul>
                             </div>
                         </li>                                             
                     </ul>
@@ -63,7 +67,10 @@
                 <label for="contraseña" class="form-label">Contraseña:</label>
                 <input type="password" id="contraseña" name="contraseña" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-primary">Acceder</button>
+            <button id="btn-acceder" type="submit" class="btn btn-primary">
+                <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                Acceder
+            </button>
         </form>
     </div>
 
@@ -72,6 +79,10 @@
     <script>
         document.getElementById("formularioAcceso").addEventListener("submit", function(event) {
             event.preventDefault();
+            // Mostrar el spinner
+            document.getElementById("spinner").classList.remove("d-none");
+            // Deshabilitar el botón mientras se procesa la solicitud
+            document.getElementById("btn-acceder").setAttribute("disabled", true);
             // Obtener datos del formulario
             var email = document.getElementById("email").value;
             var contraseña = document.getElementById("contraseña").value;
@@ -79,7 +90,7 @@
             var formData = new FormData();
             formData.append("email", email);
             formData.append("contraseña", contraseña);
-            // Envia solicitud POST para carga del producto
+            // Enviar solicitud POST para verificar el usuario
             fetch("/verificar", {
                 method: "POST",
                 body: formData 
@@ -87,6 +98,13 @@
             .then(response => response.json())
             .then(data => {
                 document.getElementById("resultado").innerText = data.mensaje;
+                setTimeout(function() {
+                    // Ocultar el spinner
+                    document.getElementById("spinner").classList.add("d-none");
+                    // Habilitar el botón
+                    document.getElementById("btn-acceder").removeAttribute("disabled");
+                    window.location.href = "/";
+                }, 1000);
             })
             .catch(error => {
                 console.error("Error:", error);

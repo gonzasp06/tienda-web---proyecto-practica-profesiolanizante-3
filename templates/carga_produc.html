@@ -26,12 +26,16 @@
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="/">Inicio</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/formulario">Publicar producto</a>
-                        </li>
+                        {% if 'rol' in session and session['rol'] == 1 %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="/formulario">Publicar producto</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/usuarios">Gestionar cuentas</a>
+                            </li>
+                        {% endif %}
                         <li class="nav-item dropdown">
-                            <div c
-                            lass="dropdown">
+                            <div class="dropdown">
                               <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                                 Categorías
                               </button>
